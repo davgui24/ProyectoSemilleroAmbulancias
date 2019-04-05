@@ -1,0 +1,7 @@
+{
+  "name": "ambulancias",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
