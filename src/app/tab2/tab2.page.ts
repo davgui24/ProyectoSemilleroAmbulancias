@@ -80,12 +80,34 @@ export class Tab2Page implements OnInit {
   const waypts = [{ location: { lat: miCoordenada.lat, lng: miCoordenada.lng }, stopover: true }, { location: { lat: 10.4136537, lng: -75.52965999999999 }, stopover: true }];
 
   // api map
-  const map = new google.maps.Map(document.getElementById('map'), {
+  const map2 = new google.maps.Map(document.getElementById('map'), {
       zoom: 6,
       center: { lat: waypts[0].location.lat, lng: waypts[0].location.lng }
   });
+
+   // Agregamos un marker con las mismas cordenadas de la ubicación actual
+   const marker1 = new google.maps.Marker({
+    position: {
+      lat: miCoordenada.lat,
+      lng: miCoordenada.lng
+    },
+    map: map,   // mapa del usuario
+    title: 'Hello World!',
+    icon: 'assets/icon/ambulancia.png'
+  });
+
+  const marker2 = new google.maps.Marker({
+    position: {
+      lat: 10.4136537,
+      lng: -75.52965999999999
+    },
+    map: map2,   //mapa de la ambulancia
+    title: 'Hello World!',
+    icon: 'assets/icon/ambulancia.png'
+  });
+  
   // add map
-  directionsDisplay.setMap(map);
+  directionsDisplay.setMap(map2);
 
   // set the new
   // new Array(waypts[0].location.lat,waypts[0].location.lng)
