@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, AlertController } from '@ionic/angular';
 
 declare var google;
 
@@ -10,7 +10,8 @@ declare var google;
   styleUrls: ['tab2.page.scss']
 })
 export class Tab2Page implements OnInit {
-  constructor(private geolocation: Geolocation, private loadingCtrl: LoadingController) {}
+
+  constructor(private geolocation: Geolocation, private loadingCtrl: LoadingController, private alertCtrl: AlertController) {}
 
   ngOnInit(): void {
     this.cargarMapa();
@@ -51,18 +52,70 @@ export class Tab2Page implements OnInit {
           lng: miCoordenada.lng
         },
         map: map,
-        title: 'Hello World!'
+        title: 'Hello World!',
+        icon: 'assets/icon/ambulancia.png'
       });
+      
+      let mensaje: string = ("Latitud: " + miCoordenada.lat + " \<br> Longitud: " + miCoordenada.lng);
+      this.presentAlert('Alerta', 'Mi ubicación', mensaje);
 
       const marker2 = new google.maps.Marker({
         position: {
-          lat: 10.2,
-          lng: -74.7864063
+          lat: 10.4136537,
+          lng: -75.52965999999999
         },
         map: map,
-        title: 'Hello World!'
+        title: 'Hello World!',
+        icon: 'assets/icon/ambulancia.png'
       });
     });
 
+
+
+    // +++++++++++++++++++++++++++
+  // get api uses
+  const directionsService = new google.maps.DirectionsService;
+  const directionsDisplay = new google.maps.DirectionsRenderer;
+  // waypoints to add
+  const waypts = [{ location: { lat: miCoordenada.lat, lng: miCoordenada.lng }, stopover: true }, { location: { lat: 10.4136537, lng: -75.52965999999999 }, stopover: true }];
+
+  // api map
+  const map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 6,
+      center: { lat: waypts[0].location.lat, lng: waypts[0].location.lng }
+  });
+  // add map
+  directionsDisplay.setMap(map);
+
+  // set the new
+  // new Array(waypts[0].location.lat,waypts[0].location.lng)
+  directionsService.route({
+      origin: { lat: waypts[0].location.lat, lng: waypts[0].location.lng }, // db waypoint start
+      destination: { lat: waypts[0].location.lat, lng: waypts[0].location.lng }, // db waypoint end
+      waypoints: waypts,
+      travelMode: google.maps.TravelMode.WALKING
+  }, function (response, status) {
+      if (status === google.maps.DirectionsStatus.OK) {
+          directionsDisplay.setDirections(response);
+      } else {
+          window.alert('Ha fallat la comunicació amb el mapa a causa de: ' + status);
+      }
+  });
+
+
+  }
+
+
+
+
+  async presentAlert(header: string = '', subHeader: string = '', mensaje: string = ''){
+    const alert = await this.alertCtrl.create({
+      header: header,
+      subHeader: subHeader,
+      message: mensaje,
+      buttons: ['OK']
+    });
+
+    await alert.present();
   }
 }
